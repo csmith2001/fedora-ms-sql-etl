@@ -2,17 +2,13 @@
 # === SCRIPT VARIABLES ===
 # Directory variables
 param(
-    [System.Data.SqlClient.SqlConnection]$Connection
-)
+    [System.Data.SqlClient.SqlConnection]$Connection,
 
-$rootDir = $PSScriptRoot
-$scriptsDir = Split-Path -Path $rootDir -Parent
-$projectDir = Split-Path -Path $scriptsDir -Parent
-$csvDir = Join-Path -Path $projectDir -ChildPath "Data/Bike_Store_Relational_Database"
-$csvFiles = Get-ChildItem -Path $csvDir -Filter "*.csv"
+    [string]$DataDirectory
+)
+$csvFiles = Get-ChildItem -Path $DataDirectory -Filter "*.csv"
 # ************************************************************************************
 # === CREATE TABLE QUERIES ===
-# Try to connect to db with provided credentials
 # For each file in CSV Data:
 foreach ($file in $csvFiles)
 {

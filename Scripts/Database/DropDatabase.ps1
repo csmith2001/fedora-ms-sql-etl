@@ -1,19 +1,21 @@
 # ************************************************************************************
 # === SCRIPT VARIABLES ===
 param(
-    [System.Data.SqlClient.SqlConnection]$Connection
+    [System.Data.SqlClient.SqlConnection]$Connection,
+
+    [string]$DataBase
 )
 # ************************************************************************************
 # === DROP DATABASE QUERIES ===
 # Parametrize CREATE query as string
 $dropDatabase = @"
-IF DB_ID('SmithBikes') IS NOT NULL
+IF DB_ID('$DataBase') IS NOT NULL
 BEGIN
-    ALTER DATABASE [SmithBikes]
+    ALTER DATABASE [$DataBase]
     SET SINGLE_USER
     WITH ROLLBACK IMMEDIATE;
 
-    DROP DATABASE [SmithBikes];
+    DROP DATABASE [$DataBase];
 END
 "@
 # Create command, send text, execute query
@@ -22,4 +24,4 @@ $command.CommandText = $dropDatabase
 [void]$command.ExecuteNonQuery()
 
 # Echo to host dropped database
-Write-Host "Dropped database: SmithBikes`n"
+Write-Host "Dropped database: $DataBase`n"
