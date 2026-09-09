@@ -1,0 +1,23 @@
+services:
+  app:
+    image: mcr.microsoft.com/powershell:latest
+    container_name: stream-write
+    command: sleep infinity
+    volumes:
+      - ./:/stream-write:z
+    working_dir: /stream-write
+    depends_on:
+      - sql2022
+  sql2022:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql2022
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${SA_PASSWD}"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql2022-data:/var/opt/mssql:z
+    restart: unless-stopped
+volumes:
+  sql2022-data:
