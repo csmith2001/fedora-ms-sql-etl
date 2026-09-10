@@ -8,6 +8,8 @@ The original goal was to get more comfortable working with large datasets involv
 
 The project bootstraps a [SQL Server](https://www.microsoft.com/en-us/sql-server) database running in a [Podman](https://podman.io/) container and loads CSV data automatically.
 
+Eventually, there will be support for all Kaggle dataformats that can be read in from a script. This project is meant to showcase the capabilities I have learned in just a short time frame of self learning.
+
 The bootstrap process:
 
 1. Connects to SQL Server
