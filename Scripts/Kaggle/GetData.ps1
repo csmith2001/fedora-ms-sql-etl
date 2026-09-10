@@ -25,9 +25,11 @@ do {
       -Path $zipFile `
       -DestinationPath $targetDir `
       -Force
+
+    Remove-Item -Path $zipFile -Force
   } else {
-    Write-Host "Invalid URL!" -ForegroundColor Red
-  }
+      Write-Host "Invalid URL!" -ForegroundColor Red
+    }
 } while ($input_url -notmatch $input_pattern)
 
 Write-Host "Extracted Dataset: $kaggleDataset"
