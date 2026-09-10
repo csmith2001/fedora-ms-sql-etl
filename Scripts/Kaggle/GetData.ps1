@@ -1,5 +1,5 @@
 do {
-  $input_url=Read-Host "Enter Kaggle dataset URL: "
+  $input_url=Read-Host "Enter Kaggle dataset URL"
   $input_pattern="^(https:\/\/)?(www\.)?kaggle.com\/datasets\/([^\/]+)\/([^\/]+)$"
 
   if ($input_url -match $input_pattern) {
