@@ -4,6 +4,10 @@ A small PowerShell ETL project I built while learning PowerShell, SQL Server, an
 
 The original goal was to get more comfortable working with large datasets involving exporting millions of SQL records to a text file. Rather than just reading documentation, I wanted to build something end-to-end.
 
+## Why
+
+This is a great learning project because it mirrors how ETL platforms are structured internally: a processing/runtime layer and a database layer seperated by infrastructure.
+
 ## What it does
 
 The project bootstraps a [SQL Server](https://www.microsoft.com/en-us/sql-server) database running in a [Podman](https://podman.io/) container and loads CSV data automatically.

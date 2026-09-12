@@ -1,36 +1,24 @@
+function Get-NextRow {
+    param(
+        [System.IO.StreamReader]$Reader,
+        [char]$Delimiter = ',',
+        [switch]$Quoted
+    )
+    if($Reader.EndOfStream) {
+        return $null
+    }
+    $line = $Reader.ReadLine()
 
-param(
-    [string]$Path,
-    [char]$Delimiter = ',',
-    [switch]$HasHeaders
+    if ($Quoted) {
+        throw "Quoted TODO"
+    }
+
+    return $line.Split($Delimiter)
+}
+
+$Reader = [System.IO.StreamReader]::new(
+    "Data/red-wine-quality-cortez-et-al-2009/winequality-red.csv"
 )
 
-$reader=[System.IO.StreamReader]::new($Path)
-
-try {
-    $firstLine=$reader.ReadLine()
- 
-    if ($HasHeaders) {
-        $headers = $firstLine.Split($Delimiter)
-    }
-    else {
-        values = $reader.ReadLine().Split($Delimiter)
-        $headers = 1..($headers = $firstLine.Split($Delimiter).Count) |
-            ForEach-Object { "Column$_" }
-        $row = [ordered]@{}
-        for ($i = 0; $i -lt $headers.Count; $i++) {
-            $row[$headers[$i]] = $values[$i]
-        }
-        [PSCustomObject]$row
-    }
-    while (-not $reader.EndOfStream) {
-        $values = $reader.ReadLine().Split($Delimiter)
-        $row = [ordered]@{}
-        for ($i = 0; $i -lt $headers.Count; $i++) {
-            $row[$headers[$i]] = $values[$i]
-        }
-        [PSCustomObject]$row
-    }
-} finally {
-    $reader.Close()
-}
+$header = Get-NextRow -Reader $Reader -Delimiter ','
+$header

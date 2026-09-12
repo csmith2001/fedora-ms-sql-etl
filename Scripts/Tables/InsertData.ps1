@@ -18,13 +18,13 @@ foreach ($file in $csvFiles)
             [void]$dataTable.Columns.Add($header)
         }
         $bulkCopy = [System.Data.SqlClient.SqlBulkCopy]::new($Connection)
-        $bulkCopy.DestinationTableName = "dbo.$tableName"
+        $bulkCopy.DestinationTableName = "[dbo].[$tableName]"
         $bulkCopy.BatchSize = $batchSize
         $totalRows = 0
         while (-not $reader.EndOfStream)
         {
             $line = $reader.ReadLine()
-            if (:IsNullOrWhiteSpace($line))
+            if ([System.String]::IsNullOrWhiteSpace($line))
             {
                 continue
             }

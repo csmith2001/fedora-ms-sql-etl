@@ -13,18 +13,13 @@ try {
         throw "Database can't be empty!"
     }
 
-    # Credentials
-    $credential = Get-Credential
-    $user = $credential.UserName
-    $password = $credential.GetNetworkCredential().Password
-
     # Connection String
     $connectionString = @"
 Server=sql2022,1433;
-Database=Master;
+Database=master;
 TrustServerCertificate=True;
-User ID=$user;
-Password=$password
+User ID=$env:SA_USR;
+Password=$env:SA_PASSWD;
 "@
 
     # Connection
@@ -45,7 +40,7 @@ Password=$password
     $connection.ChangeDatabase("$database")
 
     Write-Host "Creating Tables..."
-    & "Scripts/Tables/CreateTables.ps1" -Connection $connection -DataDirectory $dataDir
+    & "Scripts/Schema/CreateTables.ps1" -Connection $connection -DataDirectory $dataDir
 
     Write-Host "Loading Data..."
     & "Scripts/Tables/InsertData.ps1" -Connection $connection -DataDirectory $dataDir
