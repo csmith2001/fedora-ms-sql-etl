@@ -14,6 +14,7 @@ foreach ($file in $csvFiles)
 {
     # Select table name and grab headers from file
     $tableName = $file.BaseName
+    # TODO add check if file is a directory and make error to user
     $headers = (Get-Content $file.FullName -First 1) -split ','
 
     # Parametrize CREATE query as string

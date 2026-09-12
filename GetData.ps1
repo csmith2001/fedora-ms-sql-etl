@@ -26,7 +26,9 @@ do {
       -DestinationPath $targetDir `
       -Force
 
+    Write-Host "Removing archive..."
     Remove-Item -Path $zipFile -Force
+    Get-ChildItem /tmp
   } else {
       Write-Host "Invalid URL!" -ForegroundColor Red
     }
