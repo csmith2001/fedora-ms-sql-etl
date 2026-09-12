@@ -1,8 +1,9 @@
-
 ## Create feature from develop
 
 ```Shell
-git checkout -b feature/branch origin develop
+git checkout develop
+git pull origin develop
+git checkout -b feature/branch
 ```
 
 ## Make some changes...
@@ -26,10 +27,6 @@ git push origin develop
 
 [Link to GitLab](https://gitlab.com/csmith2001/fedora-ms-sql-etl/-/compare)
 
-## Merge main into develop
+develop -> main
 
-```Shell
-git checkout develop
-git merge main
-git push origin develop
-```
+Configure GitLab to: Squash commits

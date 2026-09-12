@@ -1,41 +1,61 @@
-# ************************************************************************************
-# === SCRIPT VARIABLES ===
-# Directory variables
 param(
     [System.Data.SqlClient.SqlConnection]$Connection,
-
     [string]$DataDirectory
 )
 $csvFiles = Get-ChildItem -Path $DataDirectory -Filter "*.csv"
-# ************************************************************************************
-# === CREATE TABLE QUERIES ===
-# Try to connect to db with provided credentials
-# For each file in CSV Data:
+$batchSize = 10000
 foreach ($file in $csvFiles)
 {
     $tableName = $file.BaseName
-    $data = Import-Csv $file.FullName
-    $dataTable = New-Object System.Data.DataTable
-
-    foreach ($column in $data[0].PSObject.Properties.Name)
+    Write-Host "Importing $tableName..."
+    $reader = [System.IO.StreamReader]::new($file.FullName)
+    try
     {
-        [void]$dataTable.Columns.Add($column)
-    }
-
-    foreach ($row in $data)
-    {
-        $newRow = $dataTable.NewRow()
-        foreach ($column in $data[0].PSObject.Properties.Name)
+        $headers = $reader.ReadLine().Split(',')
+        $dataTable = [System.Data.DataTable]::new()
+        foreach ($header in $headers)
         {
-            $newRow[$column] = $row.$column
+            [void]$dataTable.Columns.Add($header)
         }
-
-        $dataTable.Rows.Add($newRow)
+        $bulkCopy = [System.Data.SqlClient.SqlBulkCopy]::new($Connection)
+        $bulkCopy.DestinationTableName = "[dbo].[$tableName]"
+        $bulkCopy.BatchSize = $batchSize
+        $totalRows = 0
+        while (-not $reader.EndOfStream)
+        {
+            $line = $reader.ReadLine()
+            if ([System.String]::IsNullOrWhiteSpace($line))
+            {
+                continue
+            }
+            $values = $line.Split(',')
+            $newRow = $dataTable.NewRow()
+            for ($i = 0; $i -lt $headers.Count; $i++)
+            {
+                if ($i -lt $values.Count)
+                {
+                    $newRow[$i] = $values[$i]
+                }
+            }
+            $dataTable.Rows.Add($newRow)
+            if ($dataTable.Rows.Count -ge $batchSize)
+            {
+                $bulkCopy.WriteToServer($dataTable)
+                $totalRows += $dataTable.Rows.Count
+                Write-Host "Imported $totalRows rows..."
+                $dataTable.Clear()
+            }
+        }
+        if ($dataTable.Rows.Count -gt 0)
+        {
+            $bulkCopy.WriteToServer($dataTable)
+            $totalRows += $dataTable.Rows.Count
+            $dataTable.Clear()
+        }
+        Write-Host "Imported $totalRows rows into $tableName"
     }
-
-    $bulkCopy = New-Object System.Data.SqlClient.SqlBulkCopy($Connection)
-    $bulkCopy.DestinationTableName = "dbo.$tableName"
-    $bulkCopy.WriteToServer($dataTable)
-
-    Write-Host "Imported $($dataTable.Rows.Count) rows into $tableName"
+    finally
+    {
+        $reader.Close()
+    }
 }

@@ -1,5 +1,5 @@
 do {
-  $input_url=Read-Host "Enter Kaggle dataset URL: "
+  $input_url=Read-Host "Enter Kaggle dataset URL"
   $input_pattern="^(https:\/\/)?(www\.)?kaggle.com\/datasets\/([^\/]+)\/([^\/]+)$"
 
   if ($input_url -match $input_pattern) {
@@ -25,9 +25,13 @@ do {
       -Path $zipFile `
       -DestinationPath $targetDir `
       -Force
+
+    Write-Host "Removing archive..."
+    Remove-Item -Path $zipFile -Force
+    Get-ChildItem /tmp
   } else {
-    Write-Host "Invalid URL!" -ForegroundColor Red
-  }
+      Write-Host "Invalid URL!" -ForegroundColor Red
+    }
 } while ($input_url -notmatch $input_pattern)
 
 Write-Host "Extracted Dataset: $kaggleDataset"
