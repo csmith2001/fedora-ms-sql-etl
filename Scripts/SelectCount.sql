@@ -1,7 +1,7 @@
-USE [wine]
+USE [10mil]
 GO
 -- 
 SELECT *
-FROM [dbo].[winequality-red];
+FROM [dbo].[random_numbers];
 -- 
 GO

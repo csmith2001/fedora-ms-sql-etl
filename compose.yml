@@ -2,7 +2,14 @@ services:
   app:
     image: mcr.microsoft.com/powershell:latest
     container_name: stream-write
-    command: sleep infinity
+    command: 
+      - pwsh
+      - -NoLogo
+      - -Command
+      - |
+        Set-PSRepository PSGallery -InstallationPolicy Trusted
+        Install-Module SqlServer -Scope AllUsers -Force
+        sleep infinity
     env_file:
       - .env
     volumes:
